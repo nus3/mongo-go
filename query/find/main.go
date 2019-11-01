@@ -37,19 +37,4 @@ func main() {
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	// bsonD := bson.D{
-	// 	{Key: "str1", Value: "abc"},
-	// 	{Key: "num1", Value: 1},
-	// 	{Key: "str2", Value: "xyz"},
-	// 	{Key: "num2", Value: bson.A{2, 3, 4}},
-	// 	{Key: "subdoc", Value: bson.D{{Key: "str", Value: "subdoc"}, {Key: "num", Value: 987}}},
-	// 	{Key: "date", Value: time.Now()},
-	// }
-
-	// res, err := collection.InsertOne(context.Background(), bsonD)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// fmt.Println(res)
 }
