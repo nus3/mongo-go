@@ -2,10 +2,8 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/yota-hada/mongo-go/model"
@@ -15,8 +13,8 @@ import (
 
 // TODO: 関数化
 func main() {
-	count := flag.Uint("count", 0, "Count(>= 0)")
-	flag.Parse()
+	// count := flag.Uint("count", 0, "Count(>= 0)")
+	// flag.Parse()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -38,24 +36,52 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// TODO: answerをランダムで作成するところから
-
 	answerColl := client.Database("lycle_line").Collection("answer")
-
-	var answers []interface{}
-
-	// HACK: uintとintってどっちに合わせるのがいいんだっけ？
-	for index := 0; index < int(*count); index++ {
-		indexString := strconv.Itoa(index)
-
-		answer := model.Question{}
-
-		answers = append(answers, answer)
+	answer := model.Answer{
+		QuestionID:    question.ID,
+		LineChannelID: question.LineChannelID,
+		LineUserID:    "1111111111111",
+		// TODO: 回答をランダムにする
+		Answers: []model.AnswerData{
+			{
+				Title:  "質問1",
+				Answer: "A",
+			},
+			{
+				Title:  "質問2",
+				Answer: "A",
+			},
+			{
+				Title:  "質問3",
+				Answer: "A",
+			},
+			{
+				Title:  "質問4",
+				Answer: "A",
+			},
+		},
 	}
 
-	res, err := questionColl.InsertMany(context.Background(), answers)
+	res, err := answerColl.InsertOne(context.Background(), answer)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	fmt.Println(res)
+
+	// var answers []interface{}
+
+	// // HACK: uintとintってどっちに合わせるのがいいんだっけ？
+	// for index := 0; index < int(*count); index++ {
+	// 	indexString := strconv.Itoa(index)
+
+	// 	answer := model.Question{}
+
+	// 	answers = append(answers, answer)
+	// }
+
+	// res, err := questionColl.InsertMany(context.Background(), answers)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// fmt.Println(res)
 }

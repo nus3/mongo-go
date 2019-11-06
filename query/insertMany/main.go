@@ -31,7 +31,7 @@ func main() {
 		question := model.Question{
 			LineChannelID: indexString,
 			Title:         fmt.Sprintf("アンケートタイトル%s", indexString),
-			Question: []model.QuestionData{
+			Questions: []model.QuestionData{
 				{
 					Title:   "質問1",
 					Answers: []string{"A", "B", "C", "D"},
