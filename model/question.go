@@ -12,6 +12,11 @@ type Question struct {
 	Questions     []QuestionData
 }
 
+// QuestionGetRequest is
+type QuestionGetRequest struct {
+	ID primitive.ObjectID `json:"id" bson:"_id"`
+}
+
 // QuestionGetResponse is
 type QuestionGetResponse struct {
 	ID            primitive.ObjectID `json:"id" bson:"_id"`
