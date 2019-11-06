@@ -20,6 +20,8 @@ type QuestionGetRequest struct {
 	ID primitive.ObjectID `json:"id" bson:"_id"`
 }
 
+// TODO: 構造体で検索するとき全部のfield入れなくてもいいようにしたい
+
 // QuestionGetRequestByLine is
 type QuestionGetRequestByLine struct {
 	LineChannelID string `json:"lineChannelID" bson:"lineChannelID"`

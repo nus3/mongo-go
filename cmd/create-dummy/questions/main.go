@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// TODO: 関数化
 func main() {
 	count := flag.Uint("count", 0, "Count(>= 0)")
 	flag.Parse()
@@ -36,7 +37,7 @@ func main() {
 		question := model.Question{
 			LineChannelID: indexString,
 			Title:         fmt.Sprintf("アンケートタイトル%s", indexString),
-			Question: []model.QuestionData{
+			Questions: []model.QuestionData{
 				{
 					Title:   "質問1",
 					Answers: []string{"A", "B", "C", "D"},
