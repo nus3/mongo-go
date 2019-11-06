@@ -21,7 +21,7 @@ func main() {
 	}
 	collection := client.Database("test").Collection("hoge")
 
-	cur, err := collection.Find(ctx, bson.D{})
+	cur, err := collection.Find(ctx, bson.D{{Key: "str1", Value: "abc"}})
 	if err != nil {
 		log.Fatal(err)
 	}
