@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/yota-hada/mongo-go/model"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,16 +20,8 @@ func main() {
 	}
 	collection := client.Database("lycle_line").Collection("question")
 
-	var doc model.QuestionGetResponse
-	err = collection.FindOne(context.Background(), bson.D{}).Decode(&doc)
-	if err == mongo.ErrNoDocuments {
-		log.Println("Documents not found")
-	} else if err != nil {
-		log.Fatalln(err)
-	}
-
-	req := model.QuestionGetRequest{
-		ID: doc.ID,
+	req := model.QuestionGetRequestByLine{
+		LineChannelID: "2",
 	}
 
 	var res model.QuestionGetResponse
