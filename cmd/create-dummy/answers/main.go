@@ -5,10 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"strconv"
 	"time"
 
+	"github.com/yota-hada/mongo-go/helper"
 	"github.com/yota-hada/mongo-go/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -57,43 +57,43 @@ func main() {
 			Answers: []model.AnswerData{
 				{
 					Title:  "質問1",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問2",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問3",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問4",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問5",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問6",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問7",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問8",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問9",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 				{
 					Title:  "質問10",
-					Answer: generateAnswer(),
+					Answer: helper.GenerateAnswer(),
 				},
 			},
 		}
@@ -106,11 +106,4 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Println(res)
-}
-
-func generateAnswer() string {
-	answers := []string{"A", "B", "C", "D"}
-
-	rand.Seed(time.Now().UnixNano())
-	return answers[rand.Intn(4)]
 }
