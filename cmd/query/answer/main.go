@@ -35,9 +35,35 @@ func main() {
 
 	answerColl := client.Database("lycle_line").Collection("answer")
 
-	answerCount, err := answerColl.CountDocuments(ctx, bson.D{{Key: "questionID", Value: question.ID}})
+	pipeline := []bson.M{
+		bson.M{
+			"$match": bson.M{
+				"answers": bson.M{
+					"title":  "質問1",
+					"answer": "B",
+				},
+			},
+		},
+		bson.M{
+			"$count": "sum",
+		},
+	}
+	answerAggre, err := answerColl.Aggregate(ctx, pipeline)
 	if err != nil {
+		log.Fatalln(err)
+	}
+	defer answerAggre.Close(ctx)
+
+	for answerAggre.Next(ctx) {
+		var result bson.M
+		err := answerAggre.Decode(&result)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(result)
+		break
+	}
+	if err := answerAggre.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(answerCount)
 }
