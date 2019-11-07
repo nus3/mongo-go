@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"strconv"
 	"time"
 
@@ -56,43 +57,43 @@ func main() {
 			Answers: []model.AnswerData{
 				{
 					Title:  "質問1",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問2",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問3",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問4",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問5",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問6",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問7",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問8",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問9",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 				{
 					Title:  "質問10",
-					Answer: "A",
+					Answer: generateAnswer(),
 				},
 			},
 		}
@@ -105,4 +106,11 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Println(res)
+}
+
+func generateAnswer() string {
+	answers := []string{"A", "B", "C", "D"}
+
+	rand.Seed(time.Now().UnixNano())
+	return answers[rand.Intn(4)]
 }
