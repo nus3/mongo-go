@@ -52,8 +52,10 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	defer answerAggre.Close(ctx)
 
+	// HACK: for文回したくない　合計数とるのに
 	for answerAggre.Next(ctx) {
 		var result bson.M
 		err := answerAggre.Decode(&result)
