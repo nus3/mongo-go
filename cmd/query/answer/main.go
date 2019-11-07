@@ -35,6 +35,7 @@ func main() {
 
 	answerColl := client.Database("lycle_line").Collection("answer")
 
+	// TODO: piplineの構造体化
 	pipeline := []bson.M{
 		bson.M{
 			"$match": bson.M{
