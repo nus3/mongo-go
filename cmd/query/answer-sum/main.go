@@ -34,20 +34,29 @@ func main() {
 	}
 
 	answerColl := client.Database("lycle_line").Collection("answer")
-	aggre := model.AnswerAggregater{
-		QuestionID: question.ID,
-		Answers: model.AnswerData{
-			Title:  "質問1",
-			Answer: "B",
+
+	// TODO: piplineの構造体化
+	pipeline := []bson.M{
+		bson.M{
+			"$match": bson.M{
+				"answers": bson.M{
+					"title":  "質問1",
+					"answer": "B",
+				},
+			},
+		},
+		bson.M{
+			"$count": "sum",
 		},
 	}
-
-	answerAggre, err := answerColl.Find(ctx, aggre)
+	answerAggre, err := answerColl.Aggregate(ctx, pipeline)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	defer answerAggre.Close(ctx)
+
+	// HACK: for文回したくない　合計数とるのに
 	for answerAggre.Next(ctx) {
 		var result bson.M
 		err := answerAggre.Decode(&result)
@@ -55,6 +64,7 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println(result)
+		break
 	}
 	if err := answerAggre.Err(); err != nil {
 		log.Fatal(err)

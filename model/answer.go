@@ -19,3 +19,9 @@ type AnswerData struct {
 	Title  string `json:"title" bson:"title"`
 	Answer string `json:"answer" bson:"answer"`
 }
+
+// AnswerAggregater is
+type AnswerAggregater struct {
+	QuestionID primitive.ObjectID `json:"questionID" bson:"questionID"`
+	Answers    AnswerData         `json:"answers" bson:"answers"`
+}
