@@ -34,6 +34,7 @@ func main() {
 	}
 
 	answerColl := client.Database("lycle_line").Collection("answer")
+	// TODO: andとor検索の実装
 	aggre := model.AnswerAggregater{
 		QuestionID: question.ID,
 		Answers: model.AnswerData{
