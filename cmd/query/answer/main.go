@@ -34,19 +34,34 @@ func main() {
 	}
 
 	answerColl := client.Database("lycle_line").Collection("answer")
-	// TODO: andとor検索の実装
-	aggre := model.AnswerAggregater{
-		QuestionID: question.ID,
-		Answers: model.AnswerData{
-			Title:  "質問1",
-			Answer: "B",
+	filter := bson.M{
+		"questionID": question.ID,
+		"$and": []bson.M{
+			bson.M{
+				"answers": bson.M{
+					"$elemMatch": bson.M{
+						"title":  "質問1",
+						"answer": "B",
+					},
+				},
+			},
+			bson.M{
+				"answers": bson.M{
+					"$elemMatch": bson.M{
+						"title":  "質問2",
+						"answer": "A",
+					},
+				},
+			},
 		},
 	}
 
-	answerAggre, err := answerColl.Find(ctx, aggre)
+	answerAggre, err := answerColl.Find(ctx, filter)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	count := 0
 
 	defer answerAggre.Close(ctx)
 	for answerAggre.Next(ctx) {
@@ -55,9 +70,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		count++
 		fmt.Println(result)
 	}
 	if err := answerAggre.Err(); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(count)
 }
