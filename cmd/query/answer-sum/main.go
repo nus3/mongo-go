@@ -37,18 +37,46 @@ func main() {
 
 	// TODO: piplineの構造体化
 	pipeline := []bson.M{
+		// bson.M{
+		// 	"$match": bson.M{
+		// 		"answers.title": "質問1",
+		// 	},
+		// 	"$sum": "$answers.answer",
+		// },
+		// bson.M{
+		// 	"$group": bson.M{
+		// 		"_id": "$answers.title",
+		// 		"answer": bson.M{
+		// 			"$push": bson.M{
+		// 				"answer": "$answers.answer",
+		// 			},
+		// 		},
+		// 	},
+		// },
 		bson.M{
-			"$match": bson.M{
-				"answers": bson.M{
-					"title":  "質問1",
-					"answer": "B",
+			"$addFields": bson.M{
+				"test": bson.M{
+					"$objectToArray": "$answers.answer",
 				},
 			},
 		},
-		bson.M{
-			"$count": "sum",
-		},
+		// bson.M{
+		// 	"$count": "$answers.answer",
+		// },
 	}
+	// pipeline := []bson.M{
+	// 	bson.M{
+	// 		"$match": bson.M{
+	// 			"answers": bson.M{
+	// 				"title":  "質問1",
+	// 				"answer": "B",
+	// 			},
+	// 		},
+	// 	},
+	// 	bson.M{
+	// 		"$count": "sum",
+	// 	},
+	// }
 	answerAggre, err := answerColl.Aggregate(ctx, pipeline)
 	if err != nil {
 		log.Fatalln(err)
