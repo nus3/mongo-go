@@ -22,79 +22,73 @@ func main() {
 	}
 
 	questionColl := client.Database("lycle_line").Collection("question")
-	lineChannelReq := model.QuestionGetRequestByLine{
-		LineChannelID: "2",
-	}
-	var question model.QuestionGetResponse
-	err = questionColl.FindOne(context.Background(), lineChannelReq).Decode(&question)
-	if err == mongo.ErrNoDocuments {
-		log.Println("Documents not found")
-	} else if err != nil {
-		log.Fatalln(err)
+	questionReq := bson.M{
+		"lineChannelID": "5dc8fcf253efeed654ad0b8a",
 	}
 
 	answerColl := client.Database("lycle_line").Collection("answer")
 
-	// TODO: piplineの構造体化
-	pipeline := []bson.M{
-		// bson.M{
-		// 	"$match": bson.M{
-		// 		"answers.title": "質問1",
-		// 	},
-		// 	"$sum": "$answers.answer",
-		// },
-		// bson.M{
-		// 	"$group": bson.M{
-		// 		"_id": "$answers.title",
-		// 		"answer": bson.M{
-		// 			"$push": bson.M{
-		// 				"answer": "$answers.answer",
-		// 			},
-		// 		},
-		// 	},
-		// },
-		bson.M{
-			"$addFields": bson.M{
-				"test": bson.M{
-					"$objectToArray": "$answers.answer",
-				},
-			},
-		},
-		// bson.M{
-		// 	"$count": "$answers.answer",
-		// },
-	}
-	// pipeline := []bson.M{
-	// 	bson.M{
-	// 		"$match": bson.M{
-	// 			"answers": bson.M{
-	// 				"title":  "質問1",
-	// 				"answer": "B",
-	// 			},
-	// 		},
-	// 	},
-	// 	bson.M{
-	// 		"$count": "sum",
-	// 	},
-	// }
-	answerAggre, err := answerColl.Aggregate(ctx, pipeline)
+	answerSum := map[string][]model.AnswerData{}
+
+	questions, err := questionColl.Find(ctx, questionReq)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
-
-	defer answerAggre.Close(ctx)
-
-	// HACK: for文回したくない　合計数とるのに
-	for answerAggre.Next(ctx) {
-		var result bson.M
-		err := answerAggre.Decode(&result)
+	defer questions.Close(ctx)
+	for questions.Next(ctx) {
+		var question model.Question
+		err := questions.Decode(&question)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(result)
-		break
+
+		pipeline := []bson.M{
+			bson.M{
+				"$match": bson.M{
+					"questionID": question.ID,
+				},
+			},
+			bson.M{
+				"$group": bson.M{
+					"_id": bson.M{
+						"questionID": "$questionID",
+						"answer":     "$answer",
+					},
+					"sum": bson.M{
+						"$sum": 1,
+					},
+				},
+			},
+		}
+
+		answerAggre, err := answerColl.Aggregate(ctx, pipeline)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		defer answerAggre.Close(ctx)
+
+		for answerAggre.Next(ctx) {
+			var result model.AnswerAggregater
+			err := answerAggre.Decode(&result)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			answerData := model.AnswerData{
+				Answer: result.ID.Answer,
+				Count:  result.Sum,
+			}
+
+			answerSum[result.ID.QuestionID.Hex()] = append(answerSum[result.ID.QuestionID.Hex()], answerData)
+		}
+		if err := answerAggre.Err(); err != nil {
+			log.Fatal(err)
+		}
 	}
-	if err := answerAggre.Err(); err != nil {
+	if err := questions.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println(answerSum)
 }

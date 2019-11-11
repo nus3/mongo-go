@@ -14,3 +14,20 @@ type Answer struct {
 	LineUserID      string             `json:"lineUserID" bson:"lineUserID"`
 	Answer          string             `json:"answer" bson:"answer"`
 }
+
+// HACK: もっといい感じのクエリ書いたら構造体をAggregaterとAnswerSumで分けずにすみそう
+
+// AnswerAggregater is
+type AnswerAggregater struct {
+	ID struct {
+		Answer     string             `json:"answer" bson:"answer"`
+		QuestionID primitive.ObjectID `json:"questionID" bson:"questionID"`
+	} `json:"id" bson:"_id"`
+	Sum int `json:"sum" bson:"sum"`
+}
+
+// AnswerData is
+type AnswerData struct {
+	Answer string `json:"answer" bson:"answer"`
+	Count  int    `json:"count" bson:"count"`
+}
