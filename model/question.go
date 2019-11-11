@@ -5,38 +5,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// HACK: 色々汚いの
-//       IDがあったりなかったり ちゃんとエンティティの設計をする
-
 // Question is
 type Question struct {
-	LineChannelID string         `json:"lineChannelID" bson:"lineChannelID"`
-	Title         string         `json:"title" bson:"title"`
-	Questions     []QuestionData `json:"questions" bson:"questions"`
-}
-
-// QuestionGetRequest is
-type QuestionGetRequest struct {
-	ID primitive.ObjectID `json:"id" bson:"_id"`
-}
-
-// TODO: 構造体で検索するとき全部のfield入れなくてもいいようにしたい
-
-// QuestionGetRequestByLine is
-type QuestionGetRequestByLine struct {
-	LineChannelID string `json:"lineChannelID" bson:"lineChannelID"`
-}
-
-// QuestionGetResponse is
-type QuestionGetResponse struct {
-	ID            primitive.ObjectID `json:"id" bson:"_id"`
-	LineChannelID string             `json:"lineChannelID" bson:"lineChannelID"`
-	Title         string             `json:"title" bson:"title"`
-	Questions     []QuestionData     `json:"questions" bson:"questions"`
-}
-
-// QuestionData is
-type QuestionData struct {
-	Title   string   `json:"title" bson:"title"`
-	Answers []string `json:"answers" bson:"answers"`
+	ID              primitive.ObjectID `json:"id" bson:"_id"`
+	QuestionnaireID primitive.ObjectID `json:"questionnaireID" bson:"questionnaireID"`
+	LineChannelID   string             `json:"lineChannelID" bson:"lineChannelID"`
+	Title           string             `json:"title" bson:"title"`
+	Options         []string           `json:"options" bson:"options"`
 }

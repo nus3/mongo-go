@@ -7,21 +7,10 @@ import (
 
 // Answer is
 type Answer struct {
-	ID            primitive.ObjectID `json:"id" bson:"_id"`
-	QuestionID    primitive.ObjectID `json:"questionID" bson:"questionID"`
-	LineChannelID string             `json:"lineChannelID" bson:"lineChannelID"`
-	LineUserID    string             `json:"lineUserID" bson:"lineUserID"`
-	Answers       []AnswerData       `json:"answers" bson:"answers"`
-}
-
-// AnswerData is
-type AnswerData struct {
-	Title  string `json:"title" bson:"title"`
-	Answer string `json:"answer" bson:"answer"`
-}
-
-// AnswerAggregater is
-type AnswerAggregater struct {
-	QuestionID primitive.ObjectID `json:"questionID" bson:"questionID"`
-	Answers    AnswerData         `json:"answers" bson:"answers"`
+	ID              primitive.ObjectID `json:"id" bson:"_id"`
+	QuestionnaireID primitive.ObjectID `json:"questionnaireID" bson:"questionnaireID"`
+	QuestionID      primitive.ObjectID `json:"questionID" bson:"questionID"`
+	LineChannelID   string             `json:"lineChannelID" bson:"lineChannelID"`
+	LineUserID      string             `json:"lineUserID" bson:"lineUserID"`
+	Answer          string             `json:"answer" bson:"answer"`
 }
