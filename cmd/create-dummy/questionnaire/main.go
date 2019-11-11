@@ -17,6 +17,8 @@ import (
 
 // TODO: 関数か
 func main() {
+	start := time.Now()
+
 	questionCount := flag.Uint("questionCount", 0, "Question Count(>= 0)")
 	answerCount := flag.Uint("answerCount", 0, "Answer Count(>= 0)")
 	flag.Parse()
@@ -97,4 +99,8 @@ func main() {
 	fmt.Println(questionnaireRes)
 	fmt.Println(questionsRes)
 	fmt.Println(answerRes)
+
+	// 処理
+	end := time.Now()
+	fmt.Printf("%f秒かかった\n", (end.Sub(start)).Seconds())
 }

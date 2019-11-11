@@ -13,6 +13,8 @@ import (
 )
 
 func main() {
+	start := time.Now()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
@@ -23,7 +25,8 @@ func main() {
 
 	questionColl := client.Database("lycle_line").Collection("question")
 	questionReq := bson.M{
-		"lineChannelID": "5dc8fcf253efeed654ad0b8a",
+		"lineChannelID": "5dc925e0dc65a2155a3a84c9",
+		// "lineChannelID": "5dc8fcf253efeed654ad0b8a",
 	}
 
 	answerColl := client.Database("lycle_line").Collection("answer")
@@ -91,4 +94,8 @@ func main() {
 	}
 
 	fmt.Println(answerSum)
+
+	// 処理
+	end := time.Now()
+	fmt.Printf("%f秒かかった\n", (end.Sub(start)).Seconds())
 }
