@@ -9,6 +9,7 @@ import (
 
 	"github.com/rs/xid"
 	"github.com/yota-hada/mongo-go/helper"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -58,23 +59,22 @@ func main() {
 			for i := 0; i < int(*lineUserCount); i++ {
 				lineUserID := xid.New().String()
 
-				surveyLog := SurveyLog{
-					ID:         primitive.NewObjectID(),
-					EnqueteID:  enqueteID,
-					LineUserID: lineUserID,
-					Result: map[string]string{
-						// NOTE: 回答はA~Eをランダムで生成
-						questionID1:  helper.GenerateAnswer(),
-						questionID2:  helper.GenerateAnswer(),
-						questionID3:  helper.GenerateAnswer(),
-						questionID4:  helper.GenerateAnswer(),
-						questionID5:  helper.GenerateAnswer(),
-						questionID6:  helper.GenerateAnswer(),
-						questionID7:  helper.GenerateAnswer(),
-						questionID8:  helper.GenerateAnswer(),
-						questionID9:  helper.GenerateAnswer(),
-						questionID10: helper.GenerateAnswer(),
-					},
+				// NOTE: bson.Dだとfieldの順番を担保してくれる
+				surveyLog := bson.D{
+					{Key: "_id", Value: primitive.NewObjectID()},
+					{Key: "enqueteID", Value: enqueteID},
+					{Key: "lineUserID", Value: lineUserID},
+					// NOTE: 回答はA~Eをランダムで生成
+					{Key: questionID1, Value: helper.GenerateAnswer()},
+					{Key: questionID2, Value: helper.GenerateAnswer()},
+					{Key: questionID3, Value: helper.GenerateAnswer()},
+					{Key: questionID4, Value: helper.GenerateAnswer()},
+					{Key: questionID5, Value: helper.GenerateAnswer()},
+					{Key: questionID6, Value: helper.GenerateAnswer()},
+					{Key: questionID7, Value: helper.GenerateAnswer()},
+					{Key: questionID8, Value: helper.GenerateAnswer()},
+					{Key: questionID9, Value: helper.GenerateAnswer()},
+					{Key: questionID10, Value: helper.GenerateAnswer()},
 				}
 
 				surverLogs = append(surverLogs, surveyLog)

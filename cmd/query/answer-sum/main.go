@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/yota-hada/mongo-go/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -23,77 +22,90 @@ func main() {
 		return
 	}
 
-	questionColl := client.Database("lycle_line").Collection("question")
-	questionReq := bson.M{
-		"lineChannelID": "5dc925e0dc65a2155a3a84c9",
-		// "lineChannelID": "5dc8fcf253efeed654ad0b8a",
+	surveyColl := client.Database("lycle_line").Collection("survey_log")
+
+	pipeline := []bson.M{
+		bson.M{
+			"$match": bson.M{
+				"$and": []bson.M{
+					bson.M{
+						"enqueteID": "bn5pga9b7a4qg6818iig",
+					},
+					// NOTE: questionID
+					bson.M{
+						"bn5pga9b7a4qg6818ij0": "B",
+					},
+					bson.M{
+						"bn5pga9b7a4qg6818ijg": "D",
+					},
+					bson.M{
+						"bn5pga9b7a4qg6818ik0": "C",
+					},
+					bson.M{
+						"bn5pga9b7a4qg6818ikg": "E",
+					},
+				},
+				// "$and": []bson.M{
+				// 	bson.M{
+				// 		"enqueteID": "bn5pga9b7a4qg6818iig",
+				// 	},
+				// 	bson.M{
+				// 		"$or": []bson.M{
+				// 			// NOTE: questionID
+				// 			bson.M{
+				// 				"bn5pga9b7a4qg6818ij0": bson.M{
+				// 					"$in": bson.A{"A", "B"},
+				// 				},
+				// 			},
+				// 			bson.M{
+				// 				"bn5pga9b7a4qg6818ijg": bson.M{
+				// 					"$in": bson.A{"C", "D"},
+				// 				},
+				// 			},
+				// 			bson.M{
+				// 				"bn5pga9b7a4qg6818ik0": bson.M{
+				// 					"$in": bson.A{"B", "C"},
+				// 				},
+				// 			},
+				// 			bson.M{
+				// 				"bn5pga9b7a4qg6818ikg": bson.M{
+				// 					"$in": bson.A{"A", "B", "D", "E"},
+				// 				},
+				// 			},
+				// 		},
+				// 	},
+				// },
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": "null",
+				"count": bson.M{
+					"$sum": 1,
+				},
+			},
+		},
 	}
 
-	answerColl := client.Database("lycle_line").Collection("answer")
-
-	answerSum := map[string][]model.AnswerData{}
-
-	questions, err := questionColl.Find(ctx, questionReq)
+	surveyAggre, err := surveyColl.Aggregate(ctx, pipeline)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
-	defer questions.Close(ctx)
-	for questions.Next(ctx) {
-		var question model.Question
-		err := questions.Decode(&question)
+
+	defer surveyAggre.Close(ctx)
+	for surveyAggre.Next(ctx) {
+		var result bson.M
+		err := surveyAggre.Decode(&result)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		pipeline := []bson.M{
-			bson.M{
-				"$match": bson.M{
-					"questionID": question.ID,
-				},
-			},
-			bson.M{
-				"$group": bson.M{
-					"_id": bson.M{
-						"questionID": "$questionID",
-						"answer":     "$answer",
-					},
-					"sum": bson.M{
-						"$sum": 1,
-					},
-				},
-			},
-		}
-
-		answerAggre, err := answerColl.Aggregate(ctx, pipeline)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		defer answerAggre.Close(ctx)
-
-		for answerAggre.Next(ctx) {
-			var result model.AnswerAggregater
-			err := answerAggre.Decode(&result)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			answerData := model.AnswerData{
-				Answer: result.ID.Answer,
-				Count:  result.Sum,
-			}
-
-			answerSum[result.ID.QuestionID.Hex()] = append(answerSum[result.ID.QuestionID.Hex()], answerData)
-		}
-		if err := answerAggre.Err(); err != nil {
-			log.Fatal(err)
-		}
+		fmt.Println(result)
+		break
 	}
-	if err := questions.Err(); err != nil {
+	if err := surveyAggre.Err(); err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(answerSum)
 
 	// 処理
 	end := time.Now()
