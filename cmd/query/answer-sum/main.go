@@ -29,21 +29,28 @@ func main() {
 			"$match": bson.M{
 				"$and": []bson.M{
 					bson.M{
-						"enqueteID": "bn5pga9b7a4qg6818iig",
+						"enqueteID": "bn5ru59b7a4ih74pgv70",
 					},
 					// NOTE: questionID
 					bson.M{
-						"bn5pga9b7a4qg6818ij0": "B",
+						// NOTE: 複数選択のor条件
+						"bn5ru59b7a4ih74pgv7g": bson.M{
+							"$in": bson.A{"A", "B"},
+						},
+						// NOTE: 複数選択のand条件
+						// "bn5ru59b7a4ih74pgv7g": bson.M{
+						// 	"$all": bson.A{"A", "B", "C"},
+						// },
 					},
 					bson.M{
-						"bn5pga9b7a4qg6818ijg": "D",
+						"bn5ru59b7a4ih74pgv80": "D",
 					},
 					bson.M{
-						"bn5pga9b7a4qg6818ik0": "C",
+						"bn5rlg9b7a4gv4i64v1g": "C",
 					},
-					bson.M{
-						"bn5pga9b7a4qg6818ikg": "E",
-					},
+					// bson.M{
+					// 	"bn5pga9b7a4qg6818ikg": "E",
+					// },
 				},
 				// "$and": []bson.M{
 				// 	bson.M{

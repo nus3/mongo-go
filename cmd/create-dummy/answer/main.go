@@ -65,7 +65,8 @@ func main() {
 					{Key: "enqueteID", Value: enqueteID},
 					{Key: "lineUserID", Value: lineUserID},
 					// NOTE: 回答はA~Eをランダムで生成
-					{Key: questionID1, Value: helper.GenerateAnswer()},
+					// HACK: ダミーの回答が重複してる点
+					{Key: questionID1, Value: bson.A{helper.GenerateAnswer(), helper.GenerateAnswer(), helper.GenerateAnswer()}},
 					{Key: questionID2, Value: helper.GenerateAnswer()},
 					{Key: questionID3, Value: helper.GenerateAnswer()},
 					{Key: questionID4, Value: helper.GenerateAnswer()},
