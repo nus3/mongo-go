@@ -7,8 +7,8 @@ import (
 
 // GenerateAnswer return
 func GenerateAnswer() string {
-	answers := []string{"A", "B", "C", "D"}
+	answers := []string{"A", "B", "C", "D", "E"}
 
 	rand.Seed(time.Now().UnixNano())
-	return answers[rand.Intn(4)]
+	return answers[rand.Intn(5)]
 }
