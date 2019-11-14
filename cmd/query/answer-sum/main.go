@@ -32,22 +32,22 @@ func main() {
 						"enqueteID": "bn5ru59b7a4ih74pgv70",
 					},
 					// NOTE: questionID
-					bson.M{
-						// NOTE: 複数選択のor条件
-						"bn5ru59b7a4ih74pgv7g": bson.M{
-							"$in": bson.A{"A", "B"},
-						},
-						// NOTE: 複数選択のand条件
-						// "bn5ru59b7a4ih74pgv7g": bson.M{
-						// 	"$all": bson.A{"A", "B", "C"},
-						// },
-					},
-					bson.M{
-						"bn5ru59b7a4ih74pgv80": "D",
-					},
-					bson.M{
-						"bn5rlg9b7a4gv4i64v1g": "C",
-					},
+					// bson.M{
+					// 	// NOTE: 複数選択のor条件
+					// 	"bn5ru59b7a4ih74pgv7g": bson.M{
+					// 		"$in": bson.A{"A", "B"},
+					// 	},
+					// 	// NOTE: 複数選択のand条件
+					// 	"bn5ru59b7a4ih74pgv7g": bson.M{
+					// 		"$all": bson.A{"A", "B", "C"},
+					// 	},
+					// },
+					// bson.M{
+					// 	"bn5ru59b7a4ih74pgv80": "D",
+					// },
+					// bson.M{
+					// 	"bn5rlg9b7a4gv4i64v1g": "C",
+					// },
 					// bson.M{
 					// 	"bn5pga9b7a4qg6818ikg": "E",
 					// },
@@ -84,13 +84,21 @@ func main() {
 				// },
 			},
 		},
+		// bson.M{
+		// 	"$group": bson.M{
+		// 		"_id": "bn5ru59b7a4ih74pgv7g",
+		// 		"count": bson.M{
+		// 			"$sum": 1,
+		// 		},
+		// 	},
+		// },
+
+		// NOTE: 一問の集計値を求める
 		bson.M{
-			"$group": bson.M{
-				"_id": "null",
-				"count": bson.M{
-					"$sum": 1,
-				},
-			},
+			"$unwind": "$bn5ru59b7a4ih74pgv80",
+		},
+		bson.M{
+			"$sortByCount": "$bn5ru59b7a4ih74pgv80",
 		},
 	}
 
@@ -108,7 +116,6 @@ func main() {
 		}
 
 		fmt.Println(result)
-		break
 	}
 	if err := surveyAggre.Err(); err != nil {
 		log.Fatal(err)
